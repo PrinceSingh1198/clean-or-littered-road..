@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Road Classification</title>
+    <style>
+        body {
+            background-image: url("https://www.imageshine.in/uploads/gallery/Road-with-Sky-wallpaper-for-editing.jpg");
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        form {
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        #result {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        input[type="file"] {
+            margin-top: 10px;
+        }
+        
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Road Classification</h1>
+    <form method="POST" action="/predict" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <br><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    <h2>Prediction Result:</h2>
+    <div id="result"></div>
+
+    <script>
+        // Handle form submission
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            var fileInput = document.querySelector('input[type="file"]');
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('image', file);
+
+            // Make a POST request to the Flask app
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                // Display the prediction result
+                var resultDiv = document.getElementById('result');
+                resultDiv.textContent = 'Prediction: ' + data.prediction;
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
